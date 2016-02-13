@@ -1,6 +1,7 @@
-var config = {};
+var config = {}
 
-config.port = 3000;
-config.url = 'mongodb://localhost:27017/codesnippets';
+config.port = 3000
+config.url = 'mongodb://localhost:27017/codesnippets'
+config.userCollection = 'users'
 
-module.exports = config;
+module.exports = config
