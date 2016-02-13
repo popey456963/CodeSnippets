@@ -12,5 +12,18 @@
     <form action="">
       <input id="m" autocomplete="off" /><button>Send Data</button>
     </form>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+    <script>
+      var socket = io();
+      $('form').submit(function(){
+        socket.emit('button press', $('#m').val());
+        $('#m').val('');
+        return false;
+      });
+      socket.on('user', function(msg){
+        console.log("Data Received: ", msg);
+      });
+    </script>
   </body>
 </html>
