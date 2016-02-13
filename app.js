@@ -1,13 +1,19 @@
-//lets require/import the mongodb native drivers.
 var mongodb = require('mongodb');
+var app = require('express')();
+var http = require('http').Server(app);
 
-//We need to work with "MongoClient" interface in order to connect to a mongodb server.
 var MongoClient = mongodb.MongoClient;
-
-// Connection URL. This is where your mongodb server is running.
 var url = 'mongodb://localhost:27017/codesnippets';
+var port = 3000
 
-// Use connect method to connect to the Server
+app.get("/", function(req, res) {
+	res.send("<h1>Hello World</h1>");
+})
+
+http.listen(port, function() {
+	console.log("Listenning on *:" + String(port));
+});
+
 MongoClient.connect(url, function (err, db) {
   if (err) {
     console.log('Unable to connect to the mongoDB server. Error:', err);

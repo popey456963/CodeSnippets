@@ -1,0 +1,9 @@
+{
+  "name": "code-snippets",
+  "version": "0.0.1",
+  "description": "A Storage Place for Code Snippets",
+  "dependencies": {
+    "express": "^4.10.2",
+    "mongodb": "^2.1.7"
+  }
+}
