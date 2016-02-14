@@ -1,15 +1,19 @@
-var routing = function() {};
+var routing = function () {}
 
-routing.prototype.init = function(app, express) {
-	app.use('/', express.static(__dirname + '/static'));
+routing.prototype.init = function (app, express) {
+  root = __dirname.split('\\')
+  root.pop()
+  root = root.join('\\')
 
-	app.get("/", function(req, res) {
-	    res.sendFile(__dirname + '/static/index.html');
-	})
+  app.use('/', express.static(root + '/static'))
 
-	app.get("/login", function(req, res) {
-	    res.sendFile(__dirname + '/static/login.html');
-	})
+  app.get('/', function (req, res) {
+    res.sendFile(root + '/static/index.html')
+  })
+
+  app.get('/login', function (req, res) {
+    res.sendFile(root + '/static/login.html')
+  })
 }
 
-module.exports = new routing();
+module.exports = new routing()

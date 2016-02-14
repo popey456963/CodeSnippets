@@ -23,7 +23,7 @@ mongo.connect(MongoClient, config, function (db) {
 
   register.init()
   routing.init(app, express)
-  socket.init(io, register)
+  socket.init(io, register, mongo)
   listen.init(http, config.port)
 })
 

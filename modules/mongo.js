@@ -1,4 +1,5 @@
 var mongo = function () {}
+var bcrypt = require('bcrypt')
 
 /*
 mongo.connect(MongoClient, config, callback) {} -- Connects to MongoDB
@@ -24,21 +25,29 @@ mongo.prototype.ensureUnique = function (collection) {
   })
 }
 
-mongo.prototype.createUser = function (collection, name, username, gist, callback) {
-  var user = {
-    name: name,
-    username: username,
-    gist: gist
-  }
+mongo.prototype.hash = function (msg, callback) {
+  return bcrypt.hashSync(msg, 12)
+}
 
-  collection.insert([user], function (err, result) {
-    if (err) {
-      console.log('An Error Occurred Creating the User')
-      callback(false)
-    } else {
-      console.log('Inserted Documents')
-      callback(true)
+mongo.prototype.createUser = function (collection, msg, callback) {
+  this.hash(msg[5], function (hash) {
+    var user = {
+      name: msg[0] + ' ' + msg[1],
+      email: msg[2],
+      gist: msg[3],
+      username: msg[4],
+      password: hash
     }
+
+    collection.insert([user], function (err, result) {
+      if (err) {
+        console.log('An Error Occurred Creating the User')
+        callback(false)
+      } else {
+        console.log('Inserted Documents')
+        callback(true)
+      }
+    })
   })
 }
 
