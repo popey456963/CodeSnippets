@@ -1,8 +1,10 @@
 var listen = function () {}
+var logger = require('./logger.js')
+var l = 'LSTEN'
 
 listen.prototype.init = function (http, port) {
   http.listen(port, function () {
-    console.log('Listening on *:' + String(port))
+    logger.success(l, 'Listening on *:' + String(port))
   })
 }
 

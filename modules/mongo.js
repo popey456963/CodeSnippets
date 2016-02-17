@@ -1,17 +1,22 @@
 var mongo = function () {}
 var bcrypt = require('bcrypt')
+var logger = require('./logger.js')
+var l = 'MONGO'
 
 /*
 mongo.connect(MongoClient, config, callback) {} -- Connects to MongoDB
 mongo.ensureUnique(collection) {} -- Ensures Unique Usernames
+mongo.hash(msg, callback) {} -- Hashes a Message
 mongo.createUser(collection, name, username, gist, callback) {} -- Creates a User
 mongo.findUser(collection, name) {} -- Finds a User
 */
 
 mongo.prototype.connect = function (MongoClient, config, callback) {
   MongoClient.connect(config.url, function (err, db) {
-    if (err) { console.log('Unable to connect to the mongoDB server. Error:', err); } else {
-      console.log('Connection established to', config.url)
+    if (err) {
+      logger.error(l, 'Unable to connect to the mongoDB server. Error:', err)
+    } else {
+      logger.log(l, 'Connection established to', config.url)
       callback(db)
     }
   })
@@ -25,44 +30,61 @@ mongo.prototype.ensureUnique = function (collection) {
   })
 }
 
-mongo.prototype.hash = function (msg, callback) {
-  return bcrypt.hashSync(msg, 12)
-}
-
 mongo.prototype.createUser = function (collection, msg, callback) {
-  this.hash(msg[5], function (hash) {
-    var user = {
-      name: msg[0] + ' ' + msg[1],
-      email: msg[2],
-      gist: msg[3],
-      username: msg[4],
-      password: hash
-    }
-
-    collection.insert([user], function (err, result) {
-      if (err) {
-        console.log('An Error Occurred Creating the User')
-        callback(false)
-      } else {
-        console.log('Inserted Documents')
-        callback(true)
+  bcrypt.genSalt(10, function (err, salt) {
+    if (err) logger.error(l, err)
+    logger.log(l, 'Salt: ' + salt)
+    bcrypt.hash('My Password', salt, function (err, hash) {
+      if (err) logger.error(l, err)
+      logger.log(l, 'Hash: ' + hash)
+      var user = {
+        name: msg[0] + ' ' + msg[1],
+        email: msg[2],
+        gist: msg[3],
+        password: hash
       }
+
+      collection.insert([user], function (err, result) {
+        if (err) {
+          logger.error(l, 'An Error Occurred Creating the User')
+          callback(false)
+        } else {
+          logger.log(l, 'Inserted Documents')
+          callback(true)
+        }
+      })
     })
   })
 }
 
-mongo.prototype.findUser = function (collection, name, callback) {
+mongo.prototype.findUser = function (collection, email, callback) {
   collection.find({
-    name: name
+    email: email
   }).toArray(function (err, result) {
     if (err) {
-      console.log('An Error Occurred Finding the User')
+      logger.error(l, 'An Error Occurred Finding the User')
       callback(false)
     } else if (result.length) {
-      console.log('Found Result')
+      // logger.log(l, 'Found Result')
       callback(result)
     } else {
-      console.log('No Results Found')
+      // logger.log(l, 'No Results Found')
+      callback(false)
+    }
+  })
+}
+
+mongo.prototype.checkUser = function (collection, email, password, callback) {
+  this.findUser(collection, email, function (result) {
+    if (result != false) {
+      logger.log(l, JSON.stringify(result))
+      logger.log(l, 'Given User Password: ' + password)
+      logger.log(l, 'Stored Password: ' + result[0].password)
+      bcrypt.compare(password, result[0].password, function (err, res) {
+        if (err) logger.error(l, err)
+        logger.log(l, 'Matched Passwords: ' + res)
+      })
+    } else {
       callback(false)
     }
   })

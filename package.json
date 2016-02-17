@@ -3,8 +3,12 @@
   "version": "0.0.1",
   "description": "A Storage Place for Code Snippets",
   "dependencies": {
+    "bcrypt": "^0.8.5",
+    "colour": "^0.7.1",
+    "commander": "^2.9.0",
     "express": "^4.10.2",
     "mongodb": "^2.1.7",
-    "socket.io": "^1.4.5"
+    "socket.io": "^1.4.5",
+    "winston": "^2.1.1"
   }
 }
