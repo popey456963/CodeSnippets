@@ -4,7 +4,7 @@ var l = 'SOCKT'
 
 var clients = []
 
-socket.prototype.init = function (io, register, mongo, db, login) {
+socket.prototype.init = function (io, register, mongo, db, login, config) {
   io.on('connection', function (socket) {
     logger.log(l, 'New client connected (id=' + socket.id + ').')
     clients.push(socket)
@@ -27,7 +27,7 @@ socket.prototype.init = function (io, register, mongo, db, login) {
       // logger.log(l, JSON.stringify(msg))
       var index = clients.indexOf(socket)
       if (index != -1) {
-        login.login(msg, mongo, clients[index], db)
+        login.login(msg, mongo, clients[index], db, config, login)
       }
     })
   })

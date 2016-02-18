@@ -25,6 +25,7 @@ var register = require('./modules/register.js')
 var mongo = require('./modules/mongo.js')
 var options = require('./modules/commander.js')
 var login = require('./modules/login.js')
+var session = require('./modules/session.js')
 
 logger.log(l, 'Loaded Internal Modules')
 
@@ -33,10 +34,11 @@ mongo.connect(MongoClient, config, function (db) {
   mongo.ensureUnique(users)
 
   options.init(program, config, users, spawn)
+  session.init()
   register.init()
   login.init()
   routing.init(app, express)
-  socket.init(io, register, mongo, db, login)
+  socket.init(io, register, mongo, db, login, config)
   listen.init(http, config.port)
   logger.log(l, 'Initiated Internal Modules')
 })

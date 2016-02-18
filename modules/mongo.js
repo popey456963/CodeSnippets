@@ -6,9 +6,9 @@ var l = 'MONGO'
 /*
 mongo.connect(MongoClient, config, callback) {} -- Connects to MongoDB
 mongo.ensureUnique(collection) {} -- Ensures Unique Usernames
-mongo.hash(msg, callback) {} -- Hashes a Message
 mongo.createUser(collection, name, username, gist, callback) {} -- Creates a User
 mongo.findUser(collection, name) {} -- Finds a User
+mongo.checkUser(collection, email, password, callback) {} -- Check Credentials of a User
 */
 
 mongo.prototype.connect = function (MongoClient, config, callback) {
@@ -34,7 +34,7 @@ mongo.prototype.createUser = function (collection, msg, callback) {
   bcrypt.genSalt(10, function (err, salt) {
     if (err) logger.error(l, err)
     logger.log(l, 'Salt: ' + salt)
-    bcrypt.hash('My Password', salt, function (err, hash) {
+    bcrypt.hash(msg[4], 10, function (err, hash) {
       if (err) logger.error(l, err)
       logger.log(l, 'Hash: ' + hash)
       var user = {
@@ -83,6 +83,7 @@ mongo.prototype.checkUser = function (collection, email, password, callback) {
       bcrypt.compare(password, result[0].password, function (err, res) {
         if (err) logger.error(l, err)
         logger.log(l, 'Matched Passwords: ' + res)
+        callback(res)
       })
     } else {
       callback(false)
