@@ -2,6 +2,9 @@ var rusha = new Rusha()
 var socket = io()
 var guid = localStorage.getItem('guid')
 
+if (guid != '') {
+}
+
 $('#register').submit(function () {
   var array = ['fname', 'lname', 'email', 'guser', 'password']
   for (i = 0; i < array.length; i++) {

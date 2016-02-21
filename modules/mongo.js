@@ -22,9 +22,17 @@ mongo.prototype.connect = function (MongoClient, config, callback) {
   })
 }
 
-mongo.prototype.ensureUnique = function (collection) {
+mongo.prototype.ensureUniqueUsers = function (collection) {
   collection.createIndex({
     username: 1
+  }, {
+    unique: true
+  })
+}
+
+mongo.prototype.ensureUniqueGUID = function (collection) {
+  collection.createIndex({
+    createdAt: 1
   }, {
     unique: true
   })

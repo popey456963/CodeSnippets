@@ -1,5 +1,17 @@
 var logger = function () {}
 var colour = require('colour')
+var config = require('../config.js')
+var levels = ['error', 'warn', 'info', 'debug', 'trace']
+if (levels.indexOf(config.loggingLevel) > -1) {
+  var level = levels.indexOf(config.loggingLevel)
+} else {
+  if (!isNaN(config.loggingLevel)) {
+    var level = parseInt(config.loggingLevel)
+  } else {
+    console.log(('Invalid Config Logger Level: ' + config.loggingLevel).yellow)
+    var level = 1
+  }
+}
 
 logger.prototype.date = function () {
   var date = new Date()
@@ -20,6 +32,14 @@ logger.prototype.success = function (name, msg) {
 }
 
 logger.prototype.log = function (name, msg) {
+  name = ' [' + name + '] '
+  while (name.length < 9) {
+    name += ' '
+  }
+  console.log(this.date() + name + this.s(msg).grey)
+}
+
+logger.prototype.debug = function (name, msg) {
   name = ' [' + name + '] '
   while (name.length < 9) {
     name += ' '
