@@ -10,7 +10,7 @@ var l = 'STRGE'
 
 storage.prototype.init = function () {}
 
-storage.prototype.add = function (email, guid, callback) {}
+storage.prototype.add = function (guid, callback) {}
 
 storage.prototype.test = function (guid, callback) {}
 
