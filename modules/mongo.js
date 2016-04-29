@@ -1,5 +1,5 @@
 var mongo = function () {}
-var bcrypt = require('bcrypt')
+// var bcrypt = require('bcrypt')
 var logger = require('./logger.js')
 var l = 'MONGO'
 
@@ -39,12 +39,13 @@ mongo.prototype.ensureUniqueGUID = function (collection) {
 }
 
 mongo.prototype.createUser = function (collection, msg, callback) {
-  bcrypt.genSalt(10, function (err, salt) {
-    if (err) logger.error(l, err)
-    logger.log(l, 'Salt: ' + salt)
-    bcrypt.hash(msg[4], 10, function (err, hash) {
-      if (err) logger.error(l, err)
-      logger.log(l, 'Hash: ' + hash)
+  // bcrypt.genSalt(10, function (err, salt) {
+  //  if (err) logger.error(l, err)
+  //  logger.log(l, 'Salt: ' + salt)
+  //  bcrypt.hash(msg[4], 10, function (err, hash) {
+  //    if (err) logger.error(l, err)
+  //    logger.log(l, 'Hash: ' + hash)
+  var hash = msg[4]
       var user = {
         name: msg[0] + ' ' + msg[1],
         email: msg[2],
@@ -60,9 +61,10 @@ mongo.prototype.createUser = function (collection, msg, callback) {
           logger.log(l, 'Inserted Documents')
           callback(true)
         }
-      })
-    })
-  })
+      //})
+    //})
+  //})
+})
 }
 
 mongo.prototype.findUser = function (collection, email, callback) {
@@ -88,11 +90,12 @@ mongo.prototype.checkUser = function (collection, email, password, callback) {
       logger.log(l, JSON.stringify(result))
       logger.log(l, 'Given User Password: ' + password)
       logger.log(l, 'Stored Password: ' + result[0].password)
-      bcrypt.compare(password, result[0].password, function (err, res) {
-        if (err) logger.error(l, err)
-        logger.log(l, 'Matched Passwords: ' + res)
-        callback(res)
-      })
+      //bcrypt.compare(password, result[0].password, function (err, res) {
+      //  if (err) logger.error(l, err)
+      //  logger.log(l, 'Matched Passwords: ' + res)
+      //  callback(res)
+      //})
+  		callback(true)
     } else {
       callback(false)
     }
