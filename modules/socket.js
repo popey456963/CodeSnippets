@@ -1,12 +1,12 @@
 var socket = function () {}
-var logger = require('./logger.js')
-var l = 'SOCKT'
+var logger = require('log-js')('LSTEN')
+logger.changeLength(7)
 
 var clients = []
 
 socket.prototype.init = function (io, register, mongo, db, login, config, storage) {
   io.on('connection', function (socket) {
-    logger.log(l, 'New client connected (id=' + socket.id + ').')
+    logger.log('New client connected (id=' + socket.id + ').')
     clients.push(socket)
     // console.log('A User Connected')
     socket.on('disconnect', function () {
@@ -14,7 +14,7 @@ socket.prototype.init = function (io, register, mongo, db, login, config, storag
       var index = clients.indexOf(socket)
       if (index != -1) {
         clients.splice(index, 1)
-        logger.log(l, 'Client gone (id=' + socket.id + ').')
+        logger.log('Client gone (id=' + socket.id + ').')
       }
     })
     socket.on('register', function (msg) {
@@ -24,17 +24,46 @@ socket.prototype.init = function (io, register, mongo, db, login, config, storag
       }
     })
     socket.on('login', function (msg) {
-      // logger.log(l, JSON.stringify(msg))
+      // logger.log(JSON.stringify(msg))
       var index = clients.indexOf(socket)
       if (index != -1) {
         login.login(msg, mongo, clients[index], db, config, login, storage)
       }
     })
     socket.on('test key', function (msg) {
-      logger.log(l, 'Testing Key: ' + msg)
-      console.log(storage.test(msg))
+      logger.log('Testing Key: ' + msg)
+      logger.log(storage.test(msg))
+    })
+    socket.on('test guid', function(msg, callback) {
+      storage.test(msg, function(result) {
+        if (result) {
+          callback(result)
+        } else {
+          callback(false)
+        }
+      })
+    })
+    socket.on('add code', function(msg, callback) {
+      // [Email, UUID, Code]
+      logger.log("Added Code: " + JSON.stringify(msg))
+      callback([1, "CODEID"])
+    })
+    socket.on('edit code', function(msg, callback) {
+      // [Email, UUID, CodeID, UUID]
+      logger.log("Editted Code: " + JSON.stringify(msg))
+      callback([1])
+    })
+    socket.on('remove code', function(msg, callback) {
+      // [Email, UUID, CodeID]
+      logger.log("Editted Code: " + JSON.stringify(msg))
+      callback([1])
+    })
+    socket.on('list codes', function(msg, callback) {
+      // [Email, UUID]
+      logger.log("Editted Code: " + JSON.stringify(msg))
+      callback[1, ["LIST", "OF", "CODES"]]
     })
   })
-}
 
+}
 module.exports = new socket()

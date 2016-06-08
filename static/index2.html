@@ -12,6 +12,10 @@
     <form action="">
       <input id="m" autocomplete="off" /><button>Send Data</button>
     </form>
+
+    <button id="logout" style="display: none;" onclick="window.location.replace('/logout')">Logout?</button>
+    <button id="login" style="display: none;" onclick="window.location.replace('/login')">Login</button>
+    <div id="">You are currently <span id="name">not logged in</span>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
     <script>
@@ -21,9 +25,27 @@
         $('#m').val('');
         return false;
       });
+
+      
+
       socket.on('user', function(msg){
         console.log("Data Received: ", msg);
       });
+
+      function is_logged_in(callback) {
+        socket.emit('test guid', localStorage.getItem('guid'), function(msg) {
+          callback(msg)
+        })
+      }
+
+      is_logged_in(function(logged_in) {
+        if (logged_in) {
+          document.getElementById('logout').style.display =  ""
+          $("#name").text("logged in as " + logged_in)
+        } else {
+          document.getElementById('login').style.display =  ""
+        }
+      })
     </script>
   </body>
 </html>

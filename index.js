@@ -13,9 +13,9 @@ var MongoClient = mongodb.MongoClient
 var spawn = require('child_process').spawn
 var logger = require('log-js')("INDEX")
 
+app.set('view engine', 'pug')
 logger.changeLength(7)
 logger.log('Loaded External Modules')
-app.set('view engine', 'pug');
 
 var config = require('./config.js')
 var routing = require('./modules/routing.js')
@@ -33,7 +33,6 @@ logger.log('Loaded Internal Modules')
 mongo.connect(MongoClient, config, function (db) {
   var users = db.collection('users')
   var logbook = db.collection('logbook')
-  var code = db.collection('code')
   mongo.ensureUniqueUsers(users)
   mongo.ensureUniqueGUID(logbook)
 
@@ -42,7 +41,7 @@ mongo.connect(MongoClient, config, function (db) {
   session.init()
   register.init()
   login.init()
-  routing.init(app, express)
+  routing.init(app, express, session)
   socket.init(io, register, mongo, db, login, config, session)
   listen.init(http, config.port)
   logger.log('Initiated Internal Modules')

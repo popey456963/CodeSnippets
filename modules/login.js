@@ -1,17 +1,18 @@
 var login = function () {}
-var logger = require('./logger.js')
-var l = 'LOGIN'
+var logger = require('log-js')('LSTEN')
+logger.changeLength(7)
 
 login.prototype.init = function () {}
 
 login.prototype.login = function (msg, mongo, client, db, config, login, storage) {
-  logger.log(l, 'Logging in ' + msg[0])
+  logger.log('Logging in ' + msg[0])
   var users = db.collection('users')
   mongo.checkUser(users, msg[0], msg[1], function (result) {
+    // client.emit('test', 'message')
     if (result == false) {
       client.emit('login failure', ':(')
     } else {
-      // logger.log(l, JSON.stringify(result))
+      // logger.log(JSON.stringify(result))
       login.securityCode(config, login, function (guid) {
         storage.add(msg[0], guid, function () {
           client.emit('login success', guid)

@@ -16,6 +16,6 @@ config.loggingLevel = 'debug'
 config.port = 3000
 config.url = 'mongodb://localhost:27017/codesnippets'
 config.userCollection = 'users'
-config.keyStrategy = '#aA!'
+config.keyStrategy = '#aA'
 
 module.exports = config

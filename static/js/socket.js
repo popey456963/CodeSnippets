@@ -2,7 +2,31 @@ var rusha = new Rusha()
 var socket = io()
 var guid = localStorage.getItem('guid')
 
-if (guid != '') {
+function testLoginSession() {
+  if (guid != '') {
+    socket.emit('test guid', guid, function(result) {
+      console.log("Logged In: " + String(result))
+      if (result) {
+        toastr['info']('Already Logged In!', 'Redirecting...')
+        alreadyLoggedIn()
+      }
+    })
+  }
+}
+
+function logout() {
+  socket.emit('logout', localStorage.getItem('guid'))
+  localStorage.setItem('guid', '')
+  window.location.reload()
+}
+
+testLoginSession()
+
+function alreadyLoggedIn() {
+  setTimeout(
+    function() {
+      window.location.replace("/");
+    }, 2000);
 }
 
 $('#register').submit(function () {
@@ -71,7 +95,14 @@ socket.on('login success', function (msg) {
   function callback () {
     return function () {
       toastr['success']("You're Logged In!", 'Success!')
+      setTimeout(function() {
+        window.location.replace("/");
+      }, 3500);
     }
   }
-  setTimeout(callback(), 2000)
+  setTimeout(callback(), 750)
+})
+
+socket.on('test', function(msg) {
+  console.log("We received a test message! " + JSON.stringify(msg))
 })

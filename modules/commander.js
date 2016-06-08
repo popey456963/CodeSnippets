@@ -1,6 +1,6 @@
 var commander = function () {}
-var logger = require('./logger.js')
-var l = 'INPUT'
+var logger = require('log-js')('LSTEN')
+logger.changeLength(7)
 
 commander.prototype.init = function (program, config, users, spawn) {
   program
@@ -9,15 +9,15 @@ commander.prototype.init = function (program, config, users, spawn) {
     .parse(process.argv)
 
   if (program.dropusers) {
-    logger.log(l, 'Starting User Data Backup')
+    logger.log('Starting User Data Backup')
     var datadump = spawn('mongodump', ['--out', './backups', '--db', 'codesnippets'])
     datadump.on('close', function (code) {
-      logger.log(l, 'Exit Code on Backup: ' + code)
+      logger.log('Exit Code on Backup: ' + code)
       if (code == 0) {
-        logger.success(l, 'Backup Appears Successful - Dropping Users')
+        logger.success('Backup Appears Successful - Dropping Users')
         users.drop()
       } else {
-        logger.error(l, 'Backup Appears UnSuccessful - Cancelling User Drop')
+        logger.error('Backup Appears UnSuccessful - Cancelling User Drop')
       }
     })
   }
