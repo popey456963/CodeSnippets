@@ -1,0 +1,16 @@
+html
+	head
+		title Code Snippets :: Login
+
+	body
+		form(action="/login", method="post")
+			#username
+				label Username:
+				input(type="text" name="username")
+				br
+			#password
+				label Password:
+				input(type="password" name="password")
+				br
+			#submit
+				input(type="submit", value="Submit")
