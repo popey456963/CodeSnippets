@@ -8,6 +8,11 @@ html
 			Username: #{user.username} <br />
 			Name: #{user.displayName} <br />
 			Email: #{user.emails[0].value} <br />
+			Code Pieces: <br />
+
+		ul
+			each val, index in values.length ? values : ['There are no values']
+				li= index + ": " + val
 
 
 		a(href="/logout") Log out
